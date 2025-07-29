@@ -1,32 +1,17 @@
-from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-import os   
-from dotenv import load_dotenv
+import langchain_helper as lch
+import streamlit as st  
 
-load_dotenv()
+st.set_page_config(page_title="Pimp Name Generator", page_icon=":guardsman:", layout="centered")  
+st.title("Pimp Name Generator")
 
-def generate_pimp_name(first_name, last_name):
-    # Use ChatOpenAI for chat models like gpt-3.5-turbo
-    llm = ChatOpenAI(
-        model="gpt-3.5-turbo",
-        temperature=0.9,
-        max_tokens=100,
-        api_key=os.getenv("OPENAI_API_KEY")
-    )
-    
-    prompt_template_name = PromptTemplate(
-        input_variables=["first_name", "last_name"],
-        template="Generate 3 unique pimp names using either or both {first_name} and {last_name}. Be extremely creative and show your gangsta side."
-    )
-    
-    # Modern LangChain approach using the pipe operator
-    chain = prompt_template_name | llm | StrOutputParser()
-    
-    response = chain.invoke({"first_name": first_name, "last_name": last_name})
-    
-    return response
+first_name = st.sidebar.selectbox("What is your first name?", ["Matt", "Jonathan", "Ashley", "Tara"] , index=0)
 
-if __name__ == "__main__":
-    pimp_name = generate_pimp_name("Matt", "Pettoni")
-    print(f"Your New Handle: \n{pimp_name}")
+if first_name == "Matt" or first_name == "Ashley":
+    last_name = st.sidebar.selectbox("What is your last name?", ["Pettoni"], index=0)
+else:
+    last_name = st.sidebar.selectbox("What is your last name?", ["Airhart"], index=0)  
+
+pimp_name = lch.generate_pimp_name(first_name, last_name)
+st.write(f"Your New Handle: \n{pimp_name}")
+
+
